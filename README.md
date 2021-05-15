@@ -10,4 +10,4 @@
 - [Change the SECRET_KEY](https://github.com/teddygood/Django-practice/commit/3ac25a28d474656ec27d5f53d84cb1aa8b8ad1fd)
 - [Cryptographic signing](https://docs.djangoproject.com/en/3.2/topics/signing/)
 - [SECRET_KEY 변경 및 분리하기](https://wayhome25.github.io/django/2017/07/11/django-settings-secret-key/)
-  
+- [Django Secret Key Generator](https://miniwebtool.com/django-secret-key-generator/)
