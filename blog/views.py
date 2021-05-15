@@ -1,5 +1,5 @@
-from django.shortcuts import render
-from django.views.generic import ListView
+# from django.shortcuts import render
+from django.views.generic import ListView, DetailView
 from .models import Post
 
 
@@ -11,6 +11,9 @@ class PostList(ListView):
     ordering = '-pk'
     # template_name = 'blog/post_list.html'
 
+
+class PostDetail(DetailView):
+    model = Post
 
 # FBV(Function Based View) Style
 # def index(request):
