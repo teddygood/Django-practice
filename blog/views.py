@@ -11,13 +11,14 @@ class PostList(ListView):
     ordering = '-pk'
     # template_name = 'blog/post_list.html'
 
+
 # FBV(Function Based View) Style
 # def index(request):
 #     posts = Post.objects.all().order_by('-pk')
 #
 #     return render(
 #         request,
-#         'blog/post_list.html',
+#         'blog/index.html',
 #         {
 #             'posts': posts,
 #         }
