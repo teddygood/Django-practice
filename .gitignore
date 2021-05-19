@@ -132,3 +132,4 @@ dmypy.json
 # Pycharm
 .idea/
 migrations/
+_media/
