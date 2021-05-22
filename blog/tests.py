@@ -1,5 +1,6 @@
 from django.test import TestCase, Client
 from bs4 import BeautifulSoup
+from django.contrib.auth.models import User
 from .models import Post
 
 
@@ -7,6 +8,8 @@ from .models import Post
 class TestView(TestCase):
     def setUp(self):
         self.client = Client()
+        self.user_coffee = User.objects.create_user(username='coffee', password='somepassword')
+        self.user_cafe = User.objects.create_user(username='cafe', password='somepassword')
 
     def navbar_test(self, soup):
         navbar = soup.nav
@@ -42,10 +45,12 @@ class TestView(TestCase):
         post_001 = Post.objects.create(
             title='first post',
             content='Hello World',
+            author=self.user_coffee,
         )
         post_002 = Post.objects.create(
             title='second post',
             content='Book',
+            author=self.user_cafe,
         )
         self.assertEqual(Post.objects.count(), 2)
 
@@ -57,12 +62,16 @@ class TestView(TestCase):
         self.assertIn(post_001.title, main_area.text)
         self.assertIn(post_002.title, main_area.text)
 
+        self.assertIn(self.user_coffee.username.upper(), main_area.text)
+        self.assertIn(self.user_cafe.username.upper(), main_area.text)
+
         self.assertNotIn('Nothing', main_area.text)
 
     def test_post_detail(self):
         post_001 = Post.objects.create(
             title='first post',
             content='Hello World',
+            author=self.user_coffee,
         )
 
         self.assertEqual(post_001.get_absolute_url(), '/blog/1/')
@@ -78,5 +87,7 @@ class TestView(TestCase):
         main_area = soup.find('div', id='main-area')
         post_area = main_area.find('div', id='post-area')
         self.assertIn(post_001.title, post_area.text)
+
+        self.assertIn(self.user_coffee.username.upper(), post_area.text)
 
         self.assertIn(post_001.content, post_area.text)
