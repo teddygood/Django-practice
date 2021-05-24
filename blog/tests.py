@@ -42,38 +42,6 @@ class TestView(TestCase):
         self.post_003.tags.add(self.tag_python)
         self.post_003.tags.add(self.tag_javascript)
 
-    def test_category_page(self):
-        response = self.client.get(self.category_programming.get_absolute_url())
-        self.assertEqual(response.status_code, 200)
-
-        soup = BeautifulSoup(response.content, 'html.parser')
-        self.navbar_test(soup)
-        self.category_card_test(soup)
-
-        self.assertIn(self.category_programming.name, soup.h1.text)
-
-        main_area = soup.find('div', id='main-area')
-        self.assertIn(self.category_programming.name, main_area.text)
-        self.assertIn(self.post_001.title, main_area.text)
-        self.assertNotIn(self.post_002.title, main_area.text)
-        self.assertNotIn(self.post_003.title, main_area.text)
-
-    def test_tag_page(self):
-        response = self.client.get(self.tag_java.get_absolute_url())
-        self.assertEqual(response.status_code, 200)
-
-        soup = BeautifulSoup(response.content, 'html.parser')
-        self.navbar_test(soup)
-        self.category_card_test(soup)
-
-        self.assertIn(self.tag_java.name, soup.h1.text)
-
-        main_area = soup.find('div', id='main-area')
-        self.assertIn(self.tag_java.name, main_area.text)
-        self.assertIn(self.post_001.title, main_area.text)
-        self.assertNotIn(self.post_002.title, main_area.text)
-        self.assertNotIn(self.post_003.title, main_area.text)
-
     def navbar_test(self, soup):
         navbar = soup.nav
         self.assertIn('Blog', navbar.text)
@@ -178,3 +146,60 @@ class TestView(TestCase):
         self.assertIn(self.user_coffee.username.upper(), post_area.text)
 
         self.assertIn(self.post_001.content, post_area.text)
+
+    def test_category_page(self):
+        response = self.client.get(self.category_programming.get_absolute_url())
+        self.assertEqual(response.status_code, 200)
+
+        soup = BeautifulSoup(response.content, 'html.parser')
+        self.navbar_test(soup)
+        self.category_card_test(soup)
+
+        self.assertIn(self.category_programming.name, soup.h1.text)
+
+        main_area = soup.find('div', id='main-area')
+        self.assertIn(self.category_programming.name, main_area.text)
+        self.assertIn(self.post_001.title, main_area.text)
+        self.assertNotIn(self.post_002.title, main_area.text)
+        self.assertNotIn(self.post_003.title, main_area.text)
+
+    def test_tag_page(self):
+        response = self.client.get(self.tag_java.get_absolute_url())
+        self.assertEqual(response.status_code, 200)
+
+        soup = BeautifulSoup(response.content, 'html.parser')
+        self.navbar_test(soup)
+        self.category_card_test(soup)
+
+        self.assertIn(self.tag_java.name, soup.h1.text)
+
+        main_area = soup.find('div', id='main-area')
+        self.assertIn(self.tag_java.name, main_area.text)
+        self.assertIn(self.post_001.title, main_area.text)
+        self.assertNotIn(self.post_002.title, main_area.text)
+        self.assertNotIn(self.post_003.title, main_area.text)
+
+    def test_create_post(self):
+        response = self.client.get('/blog/create_post/')
+        self.assertNotEqual(response.status_code, 200)
+
+        self.client.login(username='cafe', password='somepassword')
+
+        response = self.client.get('/blog/create_post/')
+        self.assertEqual(response.status_code, 200)
+        soup = BeautifulSoup(response.content, 'html.parser')
+
+        self.assertEqual('Create Post - Blog', soup.title.text)
+        main_area = soup.find('div', id='main-area')
+        self.assertIn('Create New Post', main_area.text)
+
+        self.client.post(
+            '/blog/create_post/',
+            {
+                'title': 'Create a Post Form',
+                'content': "Let's create a Post Form page",
+            }
+        )
+        last_post = Post.objects.last()
+        self.assertEqual(last_post.title, "Create a Post Form")
+        self.assertEqual(last_post.author.username, 'cafe')
