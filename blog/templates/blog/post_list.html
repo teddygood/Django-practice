@@ -4,6 +4,7 @@
     <h1>
         Blog
         {% if category %}<span class="badge bg-dark">{{ category }}</span>{% endif %}
+        {% if tag %}<span class="badge bg-dark">{{ tag }} ({{ tag.post_set.count }})</span>{% endif %}
     </h1>
     {% if post_list.exists %}
         {% for p in post_list %}
