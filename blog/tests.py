@@ -1,7 +1,7 @@
 from django.test import TestCase, Client
 from bs4 import BeautifulSoup
 from django.contrib.auth.models import User
-from .models import Post, Category
+from .models import Post, Category, Tag
 
 
 # Create your tests here.
@@ -15,12 +15,17 @@ class TestView(TestCase):
         self.category_programming = Category.objects.create(name='programming', slug='programming')
         self.category_art = Category.objects.create(name='art', slug='art')
 
+        self.tag_python = Tag.objects.create(name='python study', slug='python-study')
+        self.tag_javascript = Tag.objects.create(name='javascript study', slug='javascript-study')
+        self.tag_java = Tag.objects.create(name='java study', slug='java-study')
+
         self.post_001 = Post.objects.create(
             title='first post',
             content='Hello World',
             category=self.category_programming,
             author=self.user_coffee
         )
+        self.post_001.tags.add(self.tag_java)
 
         self.post_002 = Post.objects.create(
             title='second post',
@@ -34,6 +39,8 @@ class TestView(TestCase):
             content='No content',
             author=self.user_cafe,
         )
+        self.post_003.tags.add(self.tag_python)
+        self.post_003.tags.add(self.tag_javascript)
 
     def test_category_page(self):
         response = self.client.get(self.category_programming.get_absolute_url())
@@ -50,7 +57,6 @@ class TestView(TestCase):
         self.assertIn(self.post_001.title, main_area.text)
         self.assertNotIn(self.post_002.title, main_area.text)
         self.assertNotIn(self.post_003.title, main_area.text)
-
 
     def navbar_test(self, soup):
         navbar = soup.nav
@@ -72,7 +78,8 @@ class TestView(TestCase):
     def category_card_test(self, soup):
         categories_card = soup.find('div', id='categories-card')
         self.assertIn('Categories', categories_card.text)
-        self.assertIn(f'{self.category_programming.name} ({self.category_programming.post_set.count()})', categories_card.text)
+        self.assertIn(f'{self.category_programming.name} ({self.category_programming.post_set.count()})',
+                      categories_card.text)
         self.assertIn(f'{self.category_art.name} ({self.category_art.post_set.count()})', categories_card.text)
         self.assertIn(f'Unclassified (1)', categories_card.text)
 
@@ -93,14 +100,26 @@ class TestView(TestCase):
         post_001_card = main_area.find('div', id='post-1')
         self.assertIn(self.post_001.title, post_001_card.text)
         self.assertIn(self.post_001.category.name, post_001_card.text)
+        self.assertIn(self.post_001.author.username.upper(), post_001_card.text)
+        self.assertIn(self.tag_java.name, post_001_card.text)
+        self.assertNotIn(self.tag_python.name, post_001_card.text)
+        self.assertNotIn(self.tag_javascript.name, post_001_card.text)
 
         post_002_card = main_area.find('div', id='post-2')
         self.assertIn(self.post_002.title, post_002_card.text)
         self.assertIn(self.post_002.category.name, post_002_card.text)
+        self.assertIn(self.post_001.author.username.upper(), post_001_card.text)
+        self.assertNotIn(self.tag_java.name, post_002_card.text)
+        self.assertNotIn(self.tag_python.name, post_002_card.text)
+        self.assertNotIn(self.tag_javascript.name, post_002_card.text)
 
         post_003_card = main_area.find('div', id='post-3')
         self.assertIn('Unclassified', post_003_card.text)
         self.assertIn(self.post_003.title, post_003_card.text)
+        self.assertIn(self.post_001.author.username.upper(), post_001_card.text)
+        self.assertNotIn(self.tag_java.name, post_003_card.text)
+        self.assertIn(self.tag_python.name, post_003_card.text)
+        self.assertIn(self.tag_javascript.name, post_003_card.text)
 
         self.assertIn(self.user_coffee.username.upper(), main_area.text)
         self.assertIn(self.user_cafe.username.upper(), main_area.text)
@@ -135,6 +154,10 @@ class TestView(TestCase):
         post_area = main_area.find('div', id='post-area')
         self.assertIn(self.post_001.title, post_area.text)
         self.assertIn(self.category_programming.name, post_area.text)
+
+        self.assertIn(self.tag_java.name, post_area.text)
+        self.assertNotIn(self.tag_python.name, post_area.text)
+        self.assertNotIn(self.tag_javascript.name, post_area.text)
 
         self.assertIn(self.user_coffee.username.upper(), post_area.text)
 
