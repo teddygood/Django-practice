@@ -18,7 +18,7 @@ class TestView(TestCase):
         self.category_programming = Category.objects.create(name='programming', slug='programming')
         self.category_art = Category.objects.create(name='art', slug='art')
 
-        self.tag_python = Tag.objects.create(name='python study', slug='python-study')
+        self.tag_python = Tag.objects.create(name='python', slug='python')
         self.tag_javascript = Tag.objects.create(name='javascript study', slug='javascript-study')
         self.tag_java = Tag.objects.create(name='java study', slug='java-study')
 
@@ -205,16 +205,25 @@ class TestView(TestCase):
         main_area = soup.find('div', id='main-area')
         self.assertIn('Create New Post', main_area.text)
 
+        tag_str_input = main_area.find('input', id='id_tags_str')
+        self.assertTrue(tag_str_input)
+
         self.client.post(
             '/blog/create_post/',
             {
                 'title': 'Create a Post Form',
                 'content': "Let's create a Post Form page",
+                'tags_str': 'new tag; 한글, python'
             }
         )
         last_post = Post.objects.last()
         self.assertEqual(last_post.title, "Create a Post Form")
         self.assertEqual(last_post.author.username, 'cafe')
+
+        self.assertEqual(last_post.tags.count(), 3)
+        self.assertTrue(Tag.objects.get(name='new tag'))
+        self.assertTrue(Tag.objects.get(name='한글'))
+        self.assertEqual(Tag.objects.count(), 5)
 
     def test_update_post(self):
         update_post_url = f'/blog/update_post/{self.post_003.pk}/'
