@@ -22,9 +22,15 @@
             <a href="#">{{ post.author | upper }}</a>
         </p>
         <hr/>
+
+        {% if user.is_authenticated and user == post.author %}
+            <a class="btn btn-info btn-sm float-end" href="/blog/update_post/{{ post.pk }}/" role="button">Edit Post</a>
+        {% endif %}
+
         <!-- Date and time-->
         <p>{{ post.created_at }}</p>
         <hr/>
+
         <!-- Preview image-->
         {% if post.head_image %}
             <img class="img-fluid rounded" src="{{ post.head_image.url }}" alt="{{ post.title }}" head_image>
@@ -33,6 +39,7 @@
         {% endif %}
 
         <hr>
+
         <!-- Post content-->
         <p>{{ post.content }}</p>
 

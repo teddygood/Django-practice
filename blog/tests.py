@@ -215,3 +215,42 @@ class TestView(TestCase):
         last_post = Post.objects.last()
         self.assertEqual(last_post.title, "Create a Post Form")
         self.assertEqual(last_post.author.username, 'cafe')
+
+    def test_update_post(self):
+        update_post_url = f'/blog/update_post/{self.post_003.pk}/'
+
+        # if not logged in
+        response = self.client.get(update_post_url)
+        self.assertNotEqual(response.status_code, 200)
+
+        # if logged in, but not author
+        self.assertNotEqual(self.post_003.author, self.user_coffee)
+        self.client.login(
+            username=self.user_coffee.username,
+            password='somepassword'
+        )
+        response = self.client.get(update_post_url)
+        self.assertEqual(response.status_code, 403)
+
+        # if author
+        self.client.login(
+            username=self.user_cafe.username,
+            password='somepassword'
+        )
+        response = self.client.get(update_post_url)
+        self.assertEqual(response.status_code, 200)
+        soup = BeautifulSoup(response.content, 'html.parser')
+
+        self.assertEqual('Edit Post - Blog', soup.title.text)
+        main_area = soup.find('div', id='main-area')
+        self.assertIn('Edit Post', main_area.text)
+
+        response = self.client.post(
+            update_post_url,
+            {
+                'title': 'Revise the third post.',
+                'content': 'Gray',
+                'category': self.category_programming.pk
+            },
+            follow=True
+        )
