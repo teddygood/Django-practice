@@ -254,12 +254,29 @@ class TestView(TestCase):
         main_area = soup.find('div', id='main-area')
         self.assertIn('Edit Post', main_area.text)
 
+        tag_str_input = main_area.find('input', id='id_tags_str')
+        self.assertTrue(tag_str_input)
+        self.assertIn('python; javascript study', tag_str_input.attrs['value'])
+
         response = self.client.post(
             update_post_url,
             {
                 'title': 'Revise the third post.',
                 'content': 'Gray',
-                'category': self.category_programming.pk
+                'category': self.category_programming.pk,
+                'tags_str': 'python; 한글, some tag'
             },
             follow=True
         )
+
+        soup = BeautifulSoup(response.content, 'html.parser')
+        main_area = soup.find('div', id='main-area')
+
+        self.assertIn('Revise the third post.', main_area.text)
+        self.assertIn('Gray', main_area.text)
+        self.assertIn(self.category_programming.name, main_area.text)
+
+        self.assertIn('python', main_area.text)
+        self.assertIn('한글', main_area.text)
+        self.assertIn('some tag', main_area.text)
+        self.assertNotIn('javascript study', main_area.text)
