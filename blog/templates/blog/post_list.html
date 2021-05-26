@@ -1,6 +1,12 @@
 {% extends 'blog/base.html' %}
 
 {% block main_area %}
+
+    {% if user.is_authenticated %}
+        {% if user.is_superuser or user.is_staff %}
+            <a class="btn btn-info btn-dark float-end" href="/blog/create_post/" role="button">New Post</a>
+        {% endif %}
+    {% endif %}
     <h1>
         Blog
         {% if category %}<span class="badge bg-dark">{{ category }}</span>{% endif %}
@@ -17,9 +23,9 @@
                 {% endif %}
                 <div class="card-body">
                     {% if p.category %}
-                        <span class="badge badge-secondary float-right">{{ p.category }}</span>
+                        <span class="badge badge-secondary float-end">{{ p.category }}</span>
                     {% else %}
-                        <span class="badge badge-secondary float-right">Unclassified</span>
+                        <span class="badge badge-secondary float-end">Unclassified</span>
                     {% endif %}
 
                     <h2 class="card-title">{{ p.title }}</h2>

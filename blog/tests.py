@@ -12,6 +12,9 @@ class TestView(TestCase):
         self.user_coffee = User.objects.create_user(username='coffee', password='somepassword')
         self.user_cafe = User.objects.create_user(username='cafe', password='somepassword')
 
+        self.user_cafe.is_staff = True
+        self.user_cafe.save()
+
         self.category_programming = Category.objects.create(name='programming', slug='programming')
         self.category_art = Category.objects.create(name='art', slug='art')
 
@@ -180,13 +183,22 @@ class TestView(TestCase):
         self.assertNotIn(self.post_003.title, main_area.text)
 
     def test_create_post(self):
+        # If not logged in status code != 200
         response = self.client.get('/blog/create_post/')
         self.assertNotEqual(response.status_code, 200)
 
+        # not staff login
+        self.client.login(username='coffee', password='somepassword')
+
+        response = self.client.get('/blog/create_post/')
+        self.assertNotEqual(response.status_code, 200)
+
+        # staff login
         self.client.login(username='cafe', password='somepassword')
 
         response = self.client.get('/blog/create_post/')
         self.assertEqual(response.status_code, 200)
+
         soup = BeautifulSoup(response.content, 'html.parser')
 
         self.assertEqual('Create Post - Blog', soup.title.text)
