@@ -1,14 +1,4 @@
-<!DOCTYPE html>
-<html lang="ko">
-{% load static %}
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block head_title %}Blog{% endblock %}</title>
-    <link rel="stylesheet" href="{% static 'blog/bootstrap/bootstrap.min.css' %}" media="screen">
-</head>
-<body>
+{% load socialaccount %}
 
 <!-- Navigation -->
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
@@ -30,25 +20,24 @@
                 <li class="nav-item">
                     <a class="nav-link" href="/about/">About</a>
                 </li>
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
-                       data-bs-toggle="dropdown" aria-expanded="false">
-                        Dropdown link
-                    </a>
-                    <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                        <li><a class="dropdown-item" href="#">Action</a></li>
-                        <li><a class="dropdown-item" href="#">Another action</a></li>
-                        <li>
-                            <hr class="dropdown-divider">
-                        </li>
-                        <li><a class="dropdown-item" href="#">Something else here</a></li>
-                    </ul>
-                </li>
             </ul>
             <ul class="navbar-nav ml-auto">
-                <li class="nav-item">
-                    <a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#loginModal">Log In</a>
-                </li>
+                {% if user.is_authenticated %}
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
+                           data-bs-toggle="dropdown" aria-expanded="false">
+                            {{ user.username }}
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            <li><a class="dropdown-item" href="/accounts/logout/">Log Out</a></li>
+                        </ul>
+                    </li>
+
+                {% else %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#loginModal">Log In</a>
+                    </li>
+                {% endif %}
             </ul>
         </div>
     </div>
@@ -65,23 +54,23 @@
             <div class="modal-body">
                 <div class="row">
                     <div class="col-md-6">
-                        <button type="button" class="btn btn-outline-dark btn-block btn-sm">Log in with
-                            Google
-                        </button>
-                        <button type="button" class="btn btn-outline-dark btn-block btn-sm">Log in with
-                            Email
-                        </button>
+                        <a role="button" class="btn btn-outline-dark btn-block btn-sm"
+                           href="{% provider_login_url 'google' %}">
+                            Log in with Google
+                        </a>
+                        <a role="button" class="btn btn-outline-dark btn-block btn-sm" href="/accounts/login/">
+                            Log in with Username
+                        </a>
                     </div>
                     <div class="col-md-6">
-                        <button type="button" class="btn btn-outline-dark btn-block btn-sm">Sign up with
-                            Email
-                        </button>
+                        <a role="button" class="btn btn-outline-dark btn-block btn-sm" href="/accounts/signup/">
+                            Sign up with Email
+                        </a>
                     </div>
                 </div>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary">Save changes</button>
             </div>
         </div>
     </div>
