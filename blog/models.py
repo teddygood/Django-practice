@@ -1,7 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 import os
-
+from markdown import markdown
 
 # Create your models here.
 
@@ -58,3 +58,6 @@ class Post(models.Model):
 
     def get_file_ext(self):
         return self.get_file_name().split('.')[-1]
+
+    def get_content_markdown(self):
+        return markdown(self.content)
