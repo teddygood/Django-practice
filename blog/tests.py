@@ -1,7 +1,7 @@
 from django.test import TestCase, Client
 from bs4 import BeautifulSoup
 from django.contrib.auth.models import User
-from .models import Post, Category, Tag
+from .models import Post, Category, Tag, Comment
 
 
 # Create your tests here.
@@ -44,6 +44,12 @@ class TestView(TestCase):
         )
         self.post_003.tags.add(self.tag_python)
         self.post_003.tags.add(self.tag_javascript)
+
+        self.comment_001 = Comment.objects.create(
+            post=self.post_001,
+            author=self.user_coffee,
+            content='first comment'
+        )
 
     def navbar_test(self, soup):
         navbar = soup.nav
@@ -120,11 +126,6 @@ class TestView(TestCase):
         self.assertIn('Nothing', main_area.text)
 
     def test_post_detail(self):
-        # post_001 = Post.objects.create(
-        #     title='first post',
-        #     content='Hello World',
-        #     author=self.user_coffee,
-        # )
 
         self.assertEqual(self.post_001.get_absolute_url(), '/blog/1/')
 
@@ -142,13 +143,18 @@ class TestView(TestCase):
         self.assertIn(self.post_001.title, post_area.text)
         self.assertIn(self.category_programming.name, post_area.text)
 
+        self.assertIn(self.user_coffee.username.upper(), post_area.text)
+        self.assertIn(self.post_001.content, post_area.text)
+
         self.assertIn(self.tag_java.name, post_area.text)
         self.assertNotIn(self.tag_python.name, post_area.text)
         self.assertNotIn(self.tag_javascript.name, post_area.text)
 
-        self.assertIn(self.user_coffee.username.upper(), post_area.text)
-
-        self.assertIn(self.post_001.content, post_area.text)
+        # comment area
+        comments_area = soup.find('div', id='comment-area')
+        comments_001_area = comments_area.find('div', id='comment-1')
+        self.assertIn(self.comment_001.author.username, comments_001_area.text)
+        self.assertIn(self.comment_001.content, comments_001_area.text)
 
     def test_category_page(self):
         response = self.client.get(self.category_programming.get_absolute_url())
