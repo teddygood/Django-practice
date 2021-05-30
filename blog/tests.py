@@ -412,7 +412,7 @@ class TestView(TestCase):
         self.assertFalse(comment_area.find('a', id='comment-1-delete-btn'))
         comment_002_delete_modal_btn = comment_area.find('a', id='comment-2-delete-modal-btn')
         self.assertIn('delete', comment_002_delete_modal_btn.text)
-        self.assertEqual(comment_002_delete_modal_btn.attrs['data-target'], '#deleteCommentModal-2')
+        self.assertEqual(comment_002_delete_modal_btn.attrs['data-bs-target'], '#deleteCommentModal-2')
 
         delete_comment_modal_002 = soup.find('div', id='deleteCommentModal-2')
         self.assertIn('Are you sure?', delete_comment_modal_002.text)
@@ -429,3 +429,22 @@ class TestView(TestCase):
 
         self.assertEqual(Comment.objects.count(), 1)
         self.assertEqual(self.post_001.comment_set.count(), 1)
+
+    def test_search(self):
+        post_about_python = Post.objects.create(
+            title='post about python',
+            content='Hello world!',
+            author=self.user_cafe
+        )
+
+        response = self.client.get('/blog/search/python/')
+        self.assertEqual(response.status_code, 200)
+        soup = BeautifulSoup(response.content, 'html.parser')
+
+        main_area = soup.find('div', id='main-area')
+
+        self.assertIn('Search: python(2)', main_area.text)
+        self.assertNotIn(self.post_001.title, main_area.text)
+        self.assertNotIn(self.post_002.title, main_area.text)
+        self.assertIn(self.post_003.title, main_area.text)
+        self.assertIn(post_about_python.title, main_area.text)
