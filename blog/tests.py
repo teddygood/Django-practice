@@ -34,13 +34,13 @@ class TestView(TestCase):
             title='second post',
             content='Book',
             category=self.category_art,
-            author=self.user_cafe,
+            author=self.user_cafe
         )
 
         self.post_003 = Post.objects.create(
             title='third post',
             content='No content',
-            author=self.user_cafe,
+            author=self.user_cafe
         )
         self.post_003.tags.add(self.tag_python)
         self.post_003.tags.add(self.tag_javascript)
