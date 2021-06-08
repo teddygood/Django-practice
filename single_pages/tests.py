@@ -3,7 +3,6 @@ from django.contrib.auth.models import User
 from bs4 import BeautifulSoup
 from blog.models import Post
 
-# Create your tests here.
 
 class TestView(TestCase):
     def setUp(self):
@@ -13,25 +12,25 @@ class TestView(TestCase):
     def test_landing(self):
         post_001 = Post.objects.create(
             title='first post',
-            content='Hello World',
+            content='first post',
             author=self.user_cafe
         )
 
         post_002 = Post.objects.create(
             title='second post',
-            content='Book',
+            content='second post',
             author=self.user_cafe
         )
 
         post_003 = Post.objects.create(
             title='third post',
-            content='No content',
+            content='third post',
             author=self.user_cafe
         )
 
         post_004 = Post.objects.create(
             title='fourth post',
-            content='444444444',
+            content='fourth post',
             author=self.user_cafe
         )
 
@@ -39,8 +38,8 @@ class TestView(TestCase):
         self.assertEqual(response.status_code, 200)
         soup = BeautifulSoup(response.content, 'html.parser')
 
-        body = soup.body
-        self.assertNotIn(post_001.title, body.text)
-        self.assertIn(post_002.title, body.text)
-        self.assertIn(post_003.title, body.text)
-        self.assertIn(post_004.title, body.text)
+        section = soup.section
+        self.assertNotIn(post_001.title, section.text)
+        self.assertIn(post_002.title, section.text)
+        self.assertIn(post_003.title, section.text)
+        self.assertIn(post_004.title, section.text)

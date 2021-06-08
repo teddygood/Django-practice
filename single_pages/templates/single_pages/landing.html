@@ -3,7 +3,7 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <title>I'm Greed</title>
+    <title>Greed</title>
 
     <link rel="stylesheet" href="{% static 'blog/bootstrap/bootstrap.min.css' %}" media="screen">
     <link rel="stylesheet" href="{% static 'single_pages/css/landing.css' %}" media="screen">
@@ -17,27 +17,26 @@
         <div class="row justify-content-between">
             <div class="col-lg-6 text-light">
                 <h1 class="mt-5">Greed</h1>
-                <p>Django practice</p>
+                <p>파이썬 진영의 가장 대표적인 웹프레임워크 중 하나인 django를 이용하여 여러분만의 블로그 사이트를 만들어보세요.</p>
             </div>
+
             <div class="col-lg-5 mt-5">
-                <h2 class="text-light">Recent posts</h2>
+                <h2 class="text-light">Blog - Recent posts</h2>
                 {% for post in recent_posts %}
                     <div class="card mt-1">
                         <div class="card-body">
-                            <h6>
-                                <a href="{{ post.get_absolute_url }}"
-                                   class="text-decoration-none text-dark">{{ post.title }}</a>
-                            </h6>
-                            <span class="badge bg-secondary float-end">
-                            {{ post.author.username }}
-                            &nbsp;
-                            &nbsp;
-                            {{ post.created_at }}
-                        </span>
+                            <h6><a href="{{ post.get_absolute_url }}" class="text-decoration-none text-dark">{{ post.title }}</a></h6>
+                            <span class="badge badge-pill badge-light float-end">
+                                {{ post.author.username }}
+                                &nbsp;
+                                &nbsp;
+                                {{ post.created_at }}
+                           </span>
                         </div>
                     </div>
                 {% endfor %}
             </div>
+
         </div>
     </div>
 </section>
