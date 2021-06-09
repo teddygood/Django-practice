@@ -9,14 +9,12 @@ services:
     ports:
       - 8000:8000
     env_file:
-      - ./.env.prod
+      - ./.env.dev
     depends_on:
       - db
   db:
     image: postgres:12.0-alpine
     volumes:
       - postgres_data:/var/lib/postgresql/data/
-    env_file:
-      - ./.env.prod.db
 volumes:
   postgres_data:
