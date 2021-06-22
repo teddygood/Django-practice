@@ -1,9 +1,9 @@
 # Django-practice
 
-Python version 3.7.6
+Python version 3.7.6  
 Django version 3.2.3
 
-## Reference
+## References
 
 ### Book
 
