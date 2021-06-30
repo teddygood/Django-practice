@@ -1,59 +1,11 @@
 # Django-practice
 
-Django를 연습하고 Docker로 배포합니다. 대부분 책을 보면서 따라했지만, 다른 부분들도 있을 수 있습니다.
-
-## Development envirionments
-
-- Python version 3.7.6
-- Django version 3.2.3
-- Docker
-- Docker-compose
-- Gunicorn
-- Nginx
-- PostgreSQL
-
-## Docker
-
-### Development
-
-1. 빌드 & 실행
-   
-```shell
-$ docker-compose -f docker-compose.dev.yml up --build
-```
-
-2. `127.0.0.1:8000` 접속
-
-3. 종료
-
-```shell
-$ docker-comppose -f docker-compose.dev.yml down -v
-```
-
-### Production
-
-1. 빌드 & 실행
-
-```shell
-$ docker-compose -f docker-compose.yml up --build
-```
-
-2. `127.0.0.1` 접속
-
-3. 종료
-
-```shell
-$ docker-comppose -f docker-compose.yml down -v
-```
-
-### Migrate & createsuperuser
-
-```shell
-docker-compose exec web python manage.py migrate
-```
+Python version 3.7.6
+Django version 3.2.3
 
 ```
-docker-compose exec web python manage.py createsuperuser
+$ docker-compose build
+$
 ```
 
 ## Reference
