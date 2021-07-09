@@ -1,6 +1,6 @@
 # Django-practice
 
-Django를 연습하고 Docker로 배포합니다. 대부분 책을 보면서 따라했지만, 다른 부분들도 있을 수 있습니다.
+Django로 블로그를 만들어보고 Docker로 배포합니다.
 
 ## Development envirionments
 
