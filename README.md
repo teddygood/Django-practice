@@ -18,41 +18,41 @@ Django로 블로그를 만들어보고 Docker로 배포합니다.
 
 1. 빌드 & 실행
    
-```shell
-$ docker-compose -f docker-compose.dev.yml up --build
+```bash
+docker-compose -f docker-compose.dev.yml up --build
 ```
 
 2. `127.0.0.1:8000` 접속
 
 3. 종료
 
-```shell
-$ docker-comppose -f docker-compose.dev.yml down -v
+```bash
+docker-comppose -f docker-compose.dev.yml down -v
 ```
 
 ### Production
 
 1. 빌드 & 실행
 
-```shell
-$ docker-compose -f docker-compose.yml up --build
+```bash
+docker-compose -f docker-compose.yml up --build
 ```
 
 2. `127.0.0.1` 접속
 
 3. 종료
 
-```shell
-$ docker-comppose -f docker-compose.yml down -v
+```bash
+docker-comppose -f docker-compose.yml down -v
 ```
 
 ### Migrate & createsuperuser
 
-```shell
+```bash
 docker-compose exec web python manage.py migrate
 ```
 
-```
+```bash
 docker-compose exec web python manage.py createsuperuser
 ```
 
