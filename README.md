@@ -43,10 +43,24 @@ docker-compose -f docker-compose.yml up --build
 3. 종료
 
 ```bash
-docker-comppose -f docker-compose.yml down -v
+docker-compose -f docker-compose.yml down -v
 ```
 
 ### Migrate & createsuperuser
+
+settings.py에 SECRET_KEY를 임의로 적용하고 migrate -> 이렇게 하지 않으면 `ImproperlyConfigured: The SECRET_KEY setting must not be empty` 에러가 뜰 수 있음. 도커에서 migrate 할 때는 SECRET_KEY를 지움 -> 어짜피 env 파일에 적용되어 있기 때문.
+
+```bash
+pip install -r requirements.txt
+```
+
+```bash
+python manage.py makemigrations
+```
+
+```bash
+python manage.py migrate
+```
 
 ```bash
 docker-compose exec web python manage.py migrate
@@ -81,7 +95,6 @@ docker-compose exec web python manage.py createsuperuser
 ### SECRET_KEY
 
 [commit 3ac25a2](https://github.com/teddygood/Django-practice/commit/3ac25a28d474656ec27d5f53d84cb1aa8b8ad1fd)
-- [Change the SECRET_KEY](https://github.com/teddygood/Django-practice/commit/3ac25a28d474656ec27d5f53d84cb1aa8b8ad1fd)
 - [Cryptographic signing](https://docs.djangoproject.com/en/3.2/topics/signing/)
 - [SECRET_KEY 변경 및 분리하기](https://wayhome25.github.io/django/2017/07/11/django-settings-secret-key/)
 - [Django Secret Key Generator](https://miniwebtool.com/django-secret-key-generator/)
